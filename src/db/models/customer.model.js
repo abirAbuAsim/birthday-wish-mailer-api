@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-	const user = sequelize.define(
-		'user',
+	const customer = sequelize.define(
+		'customer',
 		{
 			id: {
 				type: DataTypes.INTEGER,
@@ -27,8 +27,9 @@ module.exports = (sequelize, DataTypes) => {
 				defaultValue: DataTypes.NOW,
 				allowNull: false,
 			},
-			password: {
-				type: DataTypes.STRING,
+			birthday: {
+				type: DataTypes.DATE,
+				defaultValue: DataTypes.NOW,
 				allowNull: false,
 			},
 		},
@@ -37,9 +38,9 @@ module.exports = (sequelize, DataTypes) => {
 			 * By default, sequelize will automatically transform all passed model names into plural
 			 * References: https://sequelize.org/master/manual/model-basics.html#table-name-inference
 			 */
-			tableName: 'user',
+			tableName: 'customer',
 		}
 	);
 
-	return user;
+	return customer;
 };

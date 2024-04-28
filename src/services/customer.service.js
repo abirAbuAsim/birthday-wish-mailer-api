@@ -2,21 +2,20 @@ const httpStatus = require('http-status');
 const { Sequelize } = require('sequelize');
 const { getOffset } = require('../utils/query');
 const ApiError = require('../utils/ApiError');
-const { encryptData } = require('../utils/auth');
 const config = require('../config/config');
 const db = require('../db/models');
 const logger = require('../config/logger');
 
-async function getUserByEmail(email) {
-	const user = await db.user.findOne({
+async function getCustomerByEmail(email) {
+	const customer = await db.customer.findOne({
 		where: { email },
 		raw: true,
 	});
 
-	return user;
+	return customer;
 }
 
-async function getUserByBirthday(birthday) {
+async function getCustomerByBirthday(birthday) {
 	// Assuming birthday is passed in YYYY-MM-DD format
 	logger.info(`Looking up users with birthday on: ${birthday}`);
 
@@ -39,7 +38,7 @@ async function getUserByBirthday(birthday) {
 	return user;
 }
 
-async function getUserById(id) {
+async function getCustomerById(id) {
 	const user = await db.user.findOne({
 		where: { id },
 		raw: true,
@@ -48,27 +47,27 @@ async function getUserById(id) {
 	return user;
 }
 
-async function createUser(req) {
-	const { email, name, password } = req.body;
-	const hashedPassword = await encryptData(password);
-	const user = await getUserByEmail(email);
+async function createCustomer(req) {
+	const { email, name, birthday } = req.body;
+	logger.info(`Create Customer Request Body: ${JSON.stringify(req.body)}`);
+	const customer = await getCustomerByEmail(email);
 
-	if (user) {
+	if (customer) {
 		throw new ApiError(httpStatus.CONFLICT, 'This email already exits');
 	}
 
-	const createdUser = await db.user
+	const createdCustomer = await db.customer
 		.create({
 			name,
 			email,
-			password: hashedPassword,
+			birthday,
 		})
 		.then((resultEntity) => resultEntity.get({ plain: true }));
 
-	return createdUser;
+	return createdCustomer;
 }
 
-async function getUsers(req) {
+async function getCustomers(req) {
 	const { page: defaultPage, limit: defaultLimit } = config.pagination;
 	const {
 		page = defaultPage,
@@ -112,9 +111,9 @@ async function getUsers(req) {
 }
 
 module.exports = {
-	getUserByEmail,
-	getUserById,
-	getUserByBirthday,
-	createUser,
-	getUsers,
+	getCustomerByEmail,
+	getCustomerById,
+	getCustomerByBirthday,
+	createCustomer,
+	getCustomers,
 };

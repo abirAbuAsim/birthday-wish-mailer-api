@@ -1,6 +1,6 @@
 const httpStatus = require('http-status');
 const config = require('../config/config');
-const userService = require('./user.service');
+const userService = require('./customer.service');
 const ApiError = require('../utils/ApiError');
 const { generateToken, generateExpires } = require('../utils/auth');
 

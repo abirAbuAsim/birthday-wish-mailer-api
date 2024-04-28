@@ -1,17 +1,27 @@
 const express = require('express');
 const validate = require('../../middlewares/validate');
-const userValidation = require('../../validations/user.validation');
-const userController = require('../../controllers/user.controller');
+const customerValidation = require('../../validations/customer.validation');
+const customerController = require('../../controllers/customer.controller');
 
 const router = express.Router();
 
 router
 	.route('/')
-	.get(validate(userValidation.getUsers), userController.getUsers);
+	.post(
+		validate(customerValidation.createCustomer),
+		customerController.createCustomer
+	);
+
+router
+	.route('/')
+	.get(
+		validate(customerValidation.getCustomers),
+		customerController.getCustomers
+	);
 
 router
 	.route('/:userId')
-	.get(validate(userValidation.getUser), userController.getUser);
+	.get(validate(customerValidation.getUser), customerController.getCustomer);
 
 module.exports = router;
 

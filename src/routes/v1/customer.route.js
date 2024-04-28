@@ -6,7 +6,7 @@ const customerController = require('../../controllers/customer.controller');
 const router = express.Router();
 
 router
-	.route('/')
+	.route('/register')
 	.post(
 		validate(customerValidation.createCustomer),
 		customerController.createCustomer

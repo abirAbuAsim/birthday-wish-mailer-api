@@ -1,22 +1,19 @@
 const cron = require('node-cron');
 const logger = require('../config/logger');
-const { userService, emailService } = require('../services');
-const { sendMail } = require('../utils/mailer');
+const { customerService, emailService } = require('../services');
 
-// ... rest of your code to set up email sending ...
-
-async function getUsersWithBirthdayToday() {
-	// Example: Fetching from a database where 'birthday' is stored in 'YYYY-MM-DD' format
+async function getCustomersWithBirthdayToday() {
 	const today = new Date().toISOString().slice(0, 10); // format: YYYY-MM-DD
 	logger.info(JSON.stringify(today));
 
-	const usersWithBirthdays = await userService.getUserByBirthday(today);
-	return usersWithBirthdays;
+	const customersWithBirthdays = await customerService.getCustomerByBirthday(
+		today
+	);
+	return customersWithBirthdays;
 }
 
-// Function to send birthday wishes
 async function sendBirthdayWishes() {
-	const user = await getUsersWithBirthdayToday();
+	const user = await getCustomersWithBirthdayToday();
 
 	logger.info('Cron job started: Sending birthday wishes...');
 	logger.info(JSON.stringify(user));
@@ -32,6 +29,8 @@ async function sendBirthdayWishes() {
 }
 
 function scheduleBirthdayEmails() {
+	// Cron to run every Minute to test
+	// TODO: Update cron to run every 24 Hours
 	cron.schedule('* * * * *', sendBirthdayWishes, {
 		scheduled: true,
 		timezone: 'Asia/Dhaka',
@@ -40,5 +39,5 @@ function scheduleBirthdayEmails() {
 
 module.exports = {
 	scheduleBirthdayEmails,
-	getUsersWithBirthdayToday,
+	getCustomersWithBirthdayToday,
 };

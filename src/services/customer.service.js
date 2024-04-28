@@ -19,7 +19,7 @@ async function getCustomerByBirthday(birthday) {
 	// Assuming birthday is passed in YYYY-MM-DD format
 	logger.info(`Looking up users with birthday on: ${birthday}`);
 
-	const user = await db.user.findOne({
+	const customer = await db.customer.findOne({
 		where: {
 			// Use Sequelize.literal to format the birthday timestamp to date only for comparison
 			birthday: Sequelize.literal(`date(birthday) = '${birthday}'`),
@@ -35,7 +35,7 @@ async function getCustomerByBirthday(birthday) {
 		raw: true,
 	});
 
-	return user;
+	return customer;
 }
 
 async function getCustomerById(id) {

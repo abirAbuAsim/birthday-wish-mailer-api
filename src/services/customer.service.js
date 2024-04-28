@@ -15,11 +15,11 @@ async function getCustomerByEmail(email) {
 	return customer;
 }
 
-async function getCustomerByBirthday(birthday) {
+async function getCustomersByBirthday(birthday) {
 	// Assuming birthday is passed in YYYY-MM-DD format
 	logger.info(`Looking up users with birthday on: ${birthday}`);
 
-	const customer = await db.customer.findOne({
+	const customers = await db.customer.findAndCountAll({
 		where: {
 			// Use Sequelize.literal to format the birthday timestamp to date only for comparison
 			birthday: Sequelize.literal(`date(birthday) = '${birthday}'`),
@@ -35,7 +35,7 @@ async function getCustomerByBirthday(birthday) {
 		raw: true,
 	});
 
-	return customer;
+	return customers;
 }
 
 async function getCustomerById(id) {
@@ -113,7 +113,7 @@ async function getCustomers(req) {
 module.exports = {
 	getCustomerByEmail,
 	getCustomerById,
-	getCustomerByBirthday,
+	getCustomersByBirthday,
 	createCustomer,
 	getCustomers,
 };

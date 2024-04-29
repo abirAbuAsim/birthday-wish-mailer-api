@@ -114,4 +114,10 @@ module.exports = {
 		},
 		from: envVars.EMAIL_FROM,
 	},
+	queueName: process.env.QUEUE_NAME || 'mailbot',
+	concurrency: parseInt(process.env.QUEUE_CONCURRENCY, 10) || 1,
+	connection: {
+		host: process.env.REDIS_HOST || 'localhost',
+		port: parseInt(process.env.REDIS_PORT, 10) || '6379',
+	},
 };

@@ -3,6 +3,7 @@ const app = require('./app');
 const models = require('./db/models');
 const config = require('./config/config');
 const logger = require('./config/logger');
+const { worker } = require('./jobs/worker');
 
 // sync database
 models.sequelize.sync();
@@ -39,3 +40,13 @@ process.on('SIGTERM', () => {
 		server.close();
 	}
 });
+
+worker.on('completed', (job) =>
+	logger.info(
+		`Completed job ${job.id} successfully, sent email to ${job.data.to}`
+	)
+);
+
+worker.on('failed', (job, err) =>
+	logger.info(`Failed job ${job.id} with ${err}`)
+);

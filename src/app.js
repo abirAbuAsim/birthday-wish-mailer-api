@@ -14,8 +14,19 @@ const routes = require('./routes/v1');
 const { errorConverter, errorHandler } = require('./middlewares/error');
 const ApiError = require('./utils/ApiError');
 require('./jobs'); // This initializes your job schedulers
+const logger = require('./config/logger');
+
+const { scheduleBirthdayEmails } = require('./jobs/scheduleQueue');
 
 const app = express();
+
+// Initialize scheduling jobs
+async function startScheduler() {
+	await scheduleBirthdayEmails();
+	logger.info('BullMQ Birthday email scheduler has been initialized.');
+}
+
+startScheduler();
 
 if (config.env !== 'test') {
 	app.use(morgan.successHandler);

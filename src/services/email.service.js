@@ -69,7 +69,9 @@ const sendEmail = async (mailOptions) => {
 
 	// If there is no sender in payload, set default sender
 	const payload = mailOptions;
+	logger.info(`PAYLOAD: ${JSON.stringify(payload)}`);
 	if (!payload.from) {
+		// logger.info(`INSIDE !payload.from: ${JSON.stringify(payload)}`);
 		payload.from = DEFAULT_MAIL_SENDER;
 	}
 

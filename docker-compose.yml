@@ -34,19 +34,24 @@ services:
   redis:
     image: redis:latest
     ports:
-      - '6379:6379'
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
     networks:
       - postgres
     restart: unless-stopped
 
-  redisinsight:
-    image: redislabs/redisinsight:latest
+  redis-commander:
+    image: rediscommander/redis-commander:latest
+    platform: linux/amd64 
+    environment:
+      - REDIS_HOSTS=local:redis:6379
     ports:
-      - '5540:5540'
-    volumes:
-      - redisinsight:/db
+      - "8081:8081"
     networks:
       - postgres
+    depends_on:
+      - redis
     restart: unless-stopped
 
 networks:
@@ -56,4 +61,4 @@ networks:
 volumes:
   pgstore:
   pgadmin:
-  redisinsight:
+  redis-data:

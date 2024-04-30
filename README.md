@@ -95,6 +95,9 @@ npm run test
 
     This endpoint requires a valid JWT (JSON Web Token) to be included in the `Authorization` header of the request. The token should be prefixed with "Bearer ".
 
+    In Postman use access.token key of the tokens response in the token generation API like this,
+    ![Getting Started](./docs/images/customers_postman_api_auth_demo.png)
+
     ### Request Headers
 
     -   `Content-Type`: `application/json`

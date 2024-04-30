@@ -20,10 +20,10 @@ async function getCustomersWithBirthdayToday() {
 }
 
 async function scheduleBirthdayEmails() {
-	logger.info('INSIDE scheduleBirthdayEmails: ');
 	const customers = await getCustomersWithBirthdayToday();
-	logger.info(`Customers: ${JSON.stringify(customers)}`);
-	await queue.add(queueName, customers, { repeat: { cron: '* * * * *' } });
+
+	// cron job will execute at 12:30 AM every day.
+	await queue.add(queueName, customers, { repeat: { cron: '30 0 * * *' } });
 }
 
 module.exports = {

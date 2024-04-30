@@ -3,7 +3,7 @@ const authController = require('../../controllers/auth.controller');
 
 const router = express.Router();
 
-router.post('/generate-token', authController.generateApiToken);
+router.get('/generate-token', authController.generateApiToken);
 
 module.exports = router;
 

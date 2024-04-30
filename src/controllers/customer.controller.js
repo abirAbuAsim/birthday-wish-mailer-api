@@ -2,10 +2,12 @@ const httpStatus = require('http-status');
 const catchAsync = require('../utils/catchAsync');
 const ApiError = require('../utils/ApiError');
 const { customerService } = require('../services');
+const logger = require('../config/logger');
 
 const getCustomers = catchAsync(async (req, res) => {
-	const users = await customerService.getUsers(req);
-	res.send({ users });
+	logger.info(JSON.stringify(req.body));
+	const customers = await customerService.getCustomers(req);
+	res.send({ customers });
 });
 
 const getCustomer = catchAsync(async (req, res) => {

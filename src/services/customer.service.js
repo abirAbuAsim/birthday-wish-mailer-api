@@ -68,26 +68,11 @@ async function createCustomer(req) {
 }
 
 async function getCustomers(req) {
-	const { page: defaultPage, limit: defaultLimit } = config.pagination;
-	const {
-		page = defaultPage,
-		limit = defaultLimit,
-		name,
-		email,
-		birthday,
-	} = req.query;
+	const { page, limit } = config.pagination;
 
 	const offset = getOffset(page, limit);
 
-	// Constructing the where clause based on provided parameters
-	const where = {};
-	if (name) where.name = { [db.Sequelize.Op.like]: `%${name}%` }; // allows partial match
-	if (email) where.email = email;
-	if (birthday) where.birthday = birthday;
-
-	logger.info();
-
-	const users = await db.user.findAndCountAll({
+	const customers = await db.customer.findAndCountAll({
 		order: [
 			['name', 'ASC'],
 			['created_date_time', 'DESC'],
@@ -101,13 +86,12 @@ async function getCustomers(req) {
 			'modified_date_time',
 			'birthday',
 		],
-		where,
 		offset,
 		limit,
 		raw: true,
 	});
 
-	return users;
+	return customers;
 }
 
 module.exports = {

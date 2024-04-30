@@ -1,12 +1,17 @@
 // eslint-disable-next-line import/no-extraneous-dependencies
 const { Worker } = require('bullmq');
-const { connection, concurrency } = require('../config/config');
-const logger = require('../config/logger');
-const config = require('../config/config');
-
-const worker = new Worker(config.queueName, `${__dirname}/processor.js`, {
+const {
+	queueName,
 	connection,
 	concurrency,
+	limiter,
+} = require('../config/config');
+const logger = require('../config/logger');
+
+const worker = new Worker(queueName, `${__dirname}/processor.js`, {
+	connection,
+	concurrency,
+	limiter,
 });
 
 logger.info('Worker listening for jobs');

@@ -2,37 +2,29 @@
 const { Queue } = require('bullmq');
 const logger = require('../config/logger');
 const { queueName, connection } = require('../config/config');
+const { customerService } = require('../services');
 
 const queue = new Queue(queueName, { connection });
 
-async function scheduleBirthdayEmails() {
-	logger.info('INSIDE scheduleBirthdayEmails: ');
-	await queue.add(
-		queueName,
-		{
-			from: '######office3@gmail.com',
-			to: '######customer3@gmail.com',
-			subject: '######Happy Birthday!',
-			text: `######Happy Birthday, Customer3! Have a great day!`,
-		},
-		{ repeat: { cron: '* * * * *' } }
-	);
+async function getCustomersWithBirthdayToday() {
+	const today = new Date().toISOString().slice(0, 10); // format: YYYY-MM-DD
+	logger.info(JSON.stringify(today));
+
+	const result = await customerService.getCustomersByBirthday(today);
+
+	if (result.count === 0) {
+		logger.info("No customers found with today's birthday");
+		return [];
+	}
+	return result.rows;
 }
 
-// async function addBirthdayEmailJobs() {
-// 	const today = new Date().toISOString().slice(0, 10); // format: YYYY-MM-DD
-// 	logger.info(`INSIDE addBirthdayEmailJobs: ${JSON.stringify(today)}`);
-// 	const customers = await customerService.getCustomersByBirthday(today);
-// 	logger.info(`INSIDE addBirthdayEmailJobs: ${customers}`);
-// 	logger.info(JSON.stringify(customers));
-// 	customers.forEach((customer) => {
-// 		emailQueue.add(
-// 			'sendBirthdayEmail',
-// 			{ customer },
-// 			{ attempts: 3, backoff: 20000 }
-// 		);
-// 	});
-// }
+async function scheduleBirthdayEmails() {
+	logger.info('INSIDE scheduleBirthdayEmails: ');
+	const customers = await getCustomersWithBirthdayToday();
+	logger.info(`Customers: ${JSON.stringify(customers)}`);
+	await queue.add(queueName, customers, { repeat: { cron: '* * * * *' } });
+}
 
 module.exports = {
 	scheduleBirthdayEmails,

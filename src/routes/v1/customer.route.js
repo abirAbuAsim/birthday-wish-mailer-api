@@ -12,12 +12,7 @@ router
 		customerController.createCustomer
 	);
 
-router
-	.route('/')
-	.get(
-		validate(customerValidation.getCustomers),
-		customerController.getCustomers
-	);
+router.route('/').get(customerController.getCustomers);
 
 router
 	.route('/:userId')
